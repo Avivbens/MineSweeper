@@ -570,6 +570,8 @@ function showVictory() {
 
     clearInterval(gClockInterval);
     gClockInterval = null;
+    gGame.isOn = false;
+
 
     var elWinningLabel = document.querySelector('.over-screen');
     elWinningLabel.style.display = 'block';
@@ -590,6 +592,7 @@ function showVictory() {
 function gameOver() {
     clearInterval(gClockInterval);
     gClockInterval = null;
+    gGame.isOn = false;
 
     explodeAllMines();
 

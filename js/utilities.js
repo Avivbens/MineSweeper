@@ -133,3 +133,14 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+
+/**
+ * Playing audio from the beginning
+ * @param {Audio} audio 
+ */
+function playAudio(audio) {
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play();
+}

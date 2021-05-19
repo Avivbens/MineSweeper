@@ -5,6 +5,12 @@ const HEART_IMG = '<img class="heart" src="img/heart.png">';
 const HINT_IMG = '<img onclick="useHint()" class="hint" src="img/hint.png">';
 
 
+const PICK_SOUND = new Audio('sounds/pick.wav');
+const BOMB_SOUND = new Audio('sounds/bomb.wav');
+const WINNING_SOUND = new Audio('sounds/winning.wav');
+const LOSER_SOUND = new Audio('sounds/loser.wav');
+
+
 var gBoard;
 var gBlipInterval;
 
@@ -147,8 +153,12 @@ function cellClicked(el) {
     if (modelCell.isShown) return;
 
     if (!modelCell.isMine) {
+        playAudio(PICK_SOUND);
+
         expandShownRecursively(gBoard, location.i, location.j);
     } else {
+        playAudio(BOMB_SOUND);
+
         mineExploded(gBoard, el, location.i, location.j);
     }
 
@@ -519,6 +529,8 @@ function getMineCellsAmount() {
  * @param {Number} gameLevel 
  */
 function changeLevel(gameLevel) {
+    playAudio(PICK_SOUND);
+
     gLevel.SIZE = gameLevel;
     switch (gameLevel) {
         case 4:
@@ -554,6 +566,8 @@ function checkVictory() {
  * Show the player have won
  */
 function showVictory() {
+    playAudio(WINNING_SOUND);
+
     clearInterval(gClockInterval);
     gClockInterval = null;
 
@@ -578,6 +592,8 @@ function gameOver() {
     gClockInterval = null;
 
     explodeAllMines();
+
+    playAudio(LOSER_SOUND);
 
     var elGameOverLabel = document.querySelector('.over-screen');
     elGameOverLabel.style.display = 'block';
@@ -728,6 +744,7 @@ function activeSafeClick(el) {
     elSpottedCell.style.backgroundColor = 'rgba(207, 207, 33, 0.76)';
 
 }
+
 
 
 //

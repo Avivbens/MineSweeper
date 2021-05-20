@@ -8,11 +8,20 @@
     <title>Mine Sweeper</title>
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/stylePhone.css">
     <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 </head>
 
 <body onload="init()" oncontextmenu="return false;">
     <h1>Mine Sweeper</h1>
+
+    <!-- Save and load game -->
+    <div class="game-save-load">
+        <button onclick="saveGame()" class="manage-saves-btn">Save Game</button> <br>
+        <button onclick="reloadGame()" class="manage-saves-btn">Load Game</button>
+    </div>
+
+
 
     <!-- Clocks and levels area -->
     <p class="timer">Time: <span class="time-in-timer">0:00:00</span></p>
@@ -25,13 +34,6 @@
     <div class="best-score-label">
         Best Score: <br> <span class="best-score">none</span>
     </div>
-
-    <!-- Undo button -->
-    <button onclick="undoMove()" class="undo-btn">Undo</button>
-
-    <!-- Positioned mines button -->
-    <button onclick="positionedMines()" class="positioned-btn">Positioned <br> Mines</button>
-
 
     <!-- Board game area -->
     <table class="table-style">
@@ -53,6 +55,11 @@
         </button>
     </div>
 
+    <!-- Undo button -->
+    <button onclick="undoMove()" class="undo-btn">Undo</button>
+
+    <!-- Positioned mines button -->
+    <button onclick="positionedMines()" class="positioned-btn">Positioned <br> Mines</button>
 
     <!-- Game over screen -->
     <div class="over-screen"><span>You Won</span></div>

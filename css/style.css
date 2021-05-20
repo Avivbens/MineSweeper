@@ -15,6 +15,32 @@ h1 {
     transform: translate(-50%, 50%);
 }
 
+.game-save-load {
+    position: absolute;
+    left: 24%;
+    bottom: 85%;
+    transform: translate(-35%, 10%);
+}
+
+.manage-saves-btn {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgba(87, 116, 170, 0.795);
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.manage-saves-btn:hover {
+    cursor: pointer;
+    background-color: rgba(138, 166, 216, 0.795);
+    border: 2px dashed purple;
+}
+
+.manage-saves-btn:active {
+    background-color: rgba(66, 79, 102, 0.795);
+}
+
 .timer {
     position: absolute;
     background-color: rgb(87 116 170 / 78%);

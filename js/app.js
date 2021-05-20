@@ -61,6 +61,8 @@ function init() {
     gSafeClicks = 3;
     gCanClick = true;
 
+    gStartTime = null;
+
 
     gIsPositioningMines = false;
     gHavePositionedMines = false;
@@ -681,7 +683,8 @@ function gameOver() {
  * Start the clock when interval
  */
 function startClock() {
-    gStartTime = Date.now();
+    if (!gStartTime)
+        gStartTime = Date.now();
 
     gClockInterval = setInterval(() => {
         gNowTime = Date.now();
@@ -906,6 +909,24 @@ function activeSafeClick(el) {
 
 
 /**
+ * @param {*} board 
+ * @returns A copy of the current game
+ */
+function createGameCopy(board) {
+    var boardCopy = copyBoard(board);
+    var gameCopy = {
+        board: boardCopy,
+        lives: gLivesLeft,
+        hints: gHintsLeft,
+        safeClicks: gSafeClicks,
+        mills: gNowTime - gStartTime
+    };
+
+    return gameCopy;
+}
+
+
+/**
  * Undo one move back
  */
 function undoMove() {
@@ -935,13 +956,7 @@ function undoMove() {
  * @param {*} board 
  */
 function saveMove(board) {
-    var boardCopy = copyBoard(board);
-    var gameCopy = {
-        board: boardCopy,
-        lives: gLivesLeft,
-        hints: gHintsLeft,
-        safeClicks: gSafeClicks
-    };
+    var gameCopy = createGameCopy(board);
 
     gGameSaver.push(gameCopy);
 }
@@ -970,6 +985,41 @@ function positionedMines() {
     if (gFinishedMinePositioned) {
         renderBoard(gBoard);
     }
+}
+
+
+/**
+ * Saving the current game in localStorage
+ */
+function saveGame() {
+    if (!gCanClick || !gGame.isOn) return;
+    var gameToSave = createGameCopy(gBoard);
+    localStorage.setItem('savedGame', JSON.stringify(gameToSave))
+}
+
+
+/**
+ * Reload game from localStorage
+ */
+function reloadGame() {
+    if (!gCanClick) return;
+    var loadGame = JSON.parse(localStorage.getItem('savedGame'));
+
+
+    gBoard = loadGame.board;
+    gLivesLeft = loadGame.lives;
+    gHintsLeft = loadGame.hints;
+    gSafeClicks = loadGame.safeClicks;
+    gStartTime = Date.now() - loadGame.mills;
+
+
+    renderBoard(gBoard);
+    updateOpenClasses();
+    updateOpenMines();
+
+    updateHints();
+    updateHearts();
+    updateSafeClick();
 }
 
 

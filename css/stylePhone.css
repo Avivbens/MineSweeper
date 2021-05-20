@@ -1,0 +1,245 @@
+@media only screen and (max-width: 768px) {
+    h1 {
+        font-family: 'Comic Sans MS';
+        font-size: x-large;
+        text-shadow: 1px 1px 2px rgb(197, 82, 82), 0 0 1em rgb(87, 87, 204), 0 0 0.2em blue;
+        padding: 5px;
+        position: absolute;
+        left: 53%;
+        bottom: 94%;
+        transform: translate(-50%, 59%);
+    }
+    .game-save-load {
+        position: absolute;
+        left: 96%;
+        bottom: 86%;
+        transform: translate(-35%, 10%);
+    }
+    .manage-saves-btn {
+        padding: 10px;
+        background-color: rgba(87, 116, 170, 0.795);
+        border: none;
+        border-radius: 5px;
+        margin-left: -49px;
+    }
+    .manage-saves-btn:hover {
+        cursor: pointer;
+        background-color: rgba(138, 166, 216, 0.795);
+        border: 2px dashed purple;
+    }
+    .manage-saves-btn:active {
+        background-color: rgba(66, 79, 102, 0.795);
+    }
+    .timer {
+        position: absolute;
+        top: 0px;
+        background-color: rgb(87 116 170 / 78%);
+        border-radius: 10px;
+        text-align: left;
+        padding-left: 8px;
+        width: 79px;
+        height: 44px;
+        line-height: 44px;
+        font-family: 'Orbitron', sans-serif !important;
+        font-weight: bold;
+        font-size: 9px;
+    }
+    .time-in-timer {
+        color: rgb(8, 21, 141);
+    }
+    .levels-area {
+        position: absolute;
+        top: 47px;
+        padding-left: 10px;
+        padding-top: 5px;
+    }
+    .level-btn {
+        background-color: lightgray;
+        width: 67px;
+        height: 21px;
+        border: none;
+        border-radius: 5px;
+        font-family: 'Monaco';
+        font-size: small;
+        font-weight: bold;
+    }
+    .level-btn:hover {
+        background-color: rgb(179, 174, 174);
+        cursor: pointer;
+        border: 2px dashed blue;
+    }
+    .level-btn:active {
+        background-color: rgb(131, 127, 127);
+    }
+    .best-score-label {
+        position: absolute;
+        border: none;
+        border-radius: 10px;
+        background-color: rgba(87, 116, 170, 0.781);
+        width: 86px;
+        height: 73px;
+        padding-left: 10px;
+        padding-right: 10px;
+        top: 9%;
+        left: 37%;
+        font-family: 'Orbitron', sans-serif !important;
+        line-height: 36px;
+        font-weight: bold;
+        font-size: small;
+    }
+    .undo-btn {
+        position: absolute;
+        left: 67%;
+        bottom: 19%;
+        transform: translate(0%, 55%);
+        width: 65px;
+        height: 40px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: rgb(78, 78, 207);
+        font-family: 'Monaco';
+        font-size: medium;
+        font-weight: bold;
+        line-height: 0px;
+    }
+    .undo-btn:hover {
+        background-color: rgb(179, 174, 174);
+        cursor: pointer;
+        border: 2px dashed blue;
+    }
+    .undo-btn:active {
+        background-color: rgb(100, 99, 99);
+    }
+    .positioned-btn {
+        position: absolute;
+        left: 67%;
+        bottom: 27%;
+        transform: translate(0%, 65%);
+        width: 66px;
+        height: 50px;
+        padding: 0px;
+        border: none;
+        border-radius: 5px;
+        background-color: rgb(78, 78, 207);
+        font-family: 'Monaco';
+        font-size: small;
+        font-weight: bold;
+        line-height: 20px;
+    }
+    .positioned-btn:hover {
+        background-color: rgb(179, 174, 174);
+        cursor: pointer;
+        border: 2px dashed blue;
+    }
+    .positioned-btn:active {
+        background-color: rgb(100, 99, 99);
+    }
+    .table-style {
+        border: 2px dashed rgb(7, 37, 92);
+        width: 74vw;
+        height: 74vw;
+        position: absolute;
+        left: 51%;
+        bottom: 42%;
+        transform: translate(-50%, -5%);
+    }
+    td {
+        border: 2px solid black;
+        background-color: rgb(87, 116, 170);
+        border-radius: 5px;
+        width: 25px;
+        height: 25px;
+        font-size: 120%;
+    }
+    td:hover {
+        background-color: rgb(59, 78, 112);
+        cursor: pointer;
+    }
+    td:active {
+        background-color: rgb(42, 56, 80);
+        cursor: pointer;
+    }
+    img {
+        width: 100%;
+        height: 80%;
+        object-fit: scale-down;
+    }
+    .open {
+        background-color: rgb(14, 59, 141) !important;
+    }
+    .explosive {
+        background-color: red !important;
+    }
+    .mark {
+        border: 2px dashed rgba(190, 4, 4, 0.767);
+    }
+    .second-label {
+        background-color: rgba(87, 116, 170, 0.781);
+        border: none;
+        border-radius: 10px;
+        width: 267px;
+        height: 133px;
+        position: absolute;
+        left: 58%;
+        bottom: 13%;
+        transform: translate(-60%, -10%);
+        line-height: 0px;
+        font-family: 'Orbitron', sans-serif !important;
+        font-size: small;
+        font-weight: bold;
+    }
+    .heart {
+        width: 35px;
+    }
+    .hint {
+        width: 35px;
+    }
+    .hint:hover {
+        box-shadow: 0px 0px 10px rgb(182, 171, 14);
+    }
+    .safe-click {
+        background-color: rgb(78, 78, 207);
+        width: 67px;
+        height: 97px;
+        border: none;
+        border-radius: 5px;
+        font-family: 'Monaco';
+        font-size: large;
+        font-weight: bold;
+        position: absolute;
+        bottom: 13%;
+        left: 3%;
+    }
+    .safe-click:hover {
+        background-color: rgb(179, 174, 174);
+        cursor: pointer;
+        border: 2px dashed blue;
+    }
+    .safe-click:active {
+        background-color: rgb(100, 99, 99);
+    }
+    .over-screen {
+        background-color: rgba(19, 63, 146, 0.938);
+        border: none;
+        border-radius: 20px;
+        width: 400px;
+        height: 200px;
+        position: absolute;
+        left: 50%;
+        bottom: 20%;
+        transform: translate(-50%, -20%);
+        line-height: 200px;
+        font-family: 'Orbitron', sans-serif !important;
+        font-weight: bold;
+        font-size: 60px;
+        /* text-shadow: 0px 0px 20px rgb(182, 171, 14); */
+        display: none;
+    }
+    footer {
+        position: absolute;
+        left: 50%;
+        bottom: 5%;
+        transform: translate(-50%, -20%);
+    }
+}

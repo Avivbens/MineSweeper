@@ -76,12 +76,12 @@
         border: none;
         border-radius: 10px;
         background-color: rgba(87, 116, 170, 0.781);
-        width: 86px;
+        width: 118px;
         height: 73px;
         padding-left: 10px;
         padding-right: 10px;
         top: 9%;
-        left: 37%;
+        left: 34%;
         font-family: 'Orbitron', sans-serif !important;
         line-height: 36px;
         font-weight: bold;
@@ -137,10 +137,10 @@
     }
     .table-style {
         border: 2px dashed rgb(7, 37, 92);
-        width: 74vw;
-        height: 74vw;
+        width: 85vw;
+        height: 85vw;
         position: absolute;
-        left: 51%;
+        left: 49%;
         bottom: 32%;
         transform: translate(-50%, -5%);
     }
@@ -148,9 +148,9 @@
         border: 2px solid black;
         background-color: rgb(87, 116, 170);
         border-radius: 5px;
-        width: 25px;
-        height: 25px;
-        font-size: 120%;
+        width: 20px;
+        height: 20px;
+        font-size: 100%;
     }
     td:hover {
         background-color: rgb(59, 78, 112);

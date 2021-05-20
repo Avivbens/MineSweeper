@@ -37,7 +37,7 @@
         border-radius: 10px;
         text-align: left;
         padding-left: 8px;
-        width: 79px;
+        width: 90px;
         height: 44px;
         line-height: 44px;
         font-family: 'Orbitron', sans-serif !important;
@@ -141,7 +141,7 @@
         height: 74vw;
         position: absolute;
         left: 51%;
-        bottom: 42%;
+        bottom: 32%;
         transform: translate(-50%, -5%);
     }
     td {

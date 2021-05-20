@@ -606,6 +606,12 @@ function changeLevel(gameLevel) {
     }
 
     cleanWinningLabel();
+
+    // Restarting positioned mines button
+    var elPositionBtn = document.querySelector('.positioned-btn');
+    elPositionBtn.style.backgroundColor = 'rgb(78, 78, 207)';
+
+
     init();
 }
 
@@ -781,7 +787,7 @@ function updateLocalStorageScore(score) {
     var levelBestScoreStr = `bestScore${gLevel.SIZE}`;
 
     var currentBestScore = localStorage.getItem(levelBestScoreStr);
-    if (score < currentBestScore || !currentBestScore) localStorage.setItem(levelBestScoreStr, score);
+    if (score > 0 && (score < currentBestScore || !currentBestScore)) localStorage.setItem(levelBestScoreStr, score);
 
 
     return localStorage.getItem(levelBestScoreStr);

@@ -23,9 +23,15 @@ var gNowTime;
 
 var gLivesLeft;
 var gHintsLeft;
-var gTakingHint;
+var gIsTakingHint;
 
 var gSafeClicks;
+
+var gIsPositioningMines;
+var gHavePositionedMines;
+var gFinishedMinePositioned;
+
+var gGameSaver;
 
 
 var gLevel = {
@@ -35,6 +41,7 @@ var gLevel = {
 };
 
 var gGame;
+var gCanClick;
 
 
 //////////////////////////////////
@@ -50,12 +57,21 @@ function init() {
     };
     gLivesLeft = gLevel.LIVES;
     gHintsLeft = 3;
-    gTakingHint = false;
+    gIsTakingHint = false;
     gSafeClicks = 3;
+    gCanClick = true;
+
+
+    gIsPositioningMines = false;
+    gHavePositionedMines = false;
+    gFinishedMinePositioned = false;
+
+    gGameSaver = [];
 
     updateHearts();
     updateHints();
     updateSafeClick();
+    showBestScore();
 
 
     gBlipInterval = null;
@@ -131,11 +147,16 @@ function renderBoard(board) {
  * @param {Element} el - the cell clicked
  */
 function cellClicked(el) {
-    if (gTakingHint) {
-        gTakingHint = false;
+    if (!gCanClick) return;
+
+
+    if (gIsTakingHint) {
+        gIsTakingHint = false;
         showSurround(el);
+        return;
     }
     if (el.classList.contains('mark')) return; // Returns and not opening the cell if he is marked
+
 
     var locationClass = el.classList[1];
     var location = getLocationFromClass(locationClass);
@@ -144,11 +165,29 @@ function cellClicked(el) {
 
     // Start the game by first click, start the clock and random the mines
     if (!gGame.isOn) {
-        gGame.isOn = true;
-        startClock();
-        randomMinesInBoard(location.i, location.j);
+        // Case no mines are manually positioned
+        if (!gHavePositionedMines) {
+            gGame.isOn = true;
+            startClock();
+            randomMinesInBoard(location.i, location.j);
+
+        } else { // Positioning mines if wanted
+            if (gIsPositioningMines) { // Positioning right now
+                modelCell.isMine = true;
+                el.style.backgroundColor = 'red';
+                return;
+            }
+            if (gFinishedMinePositioned) { // Finished positioning
+                gGame.isOn = true;
+                startClock();
+            }
+        }
+
         updateCounterForAllCells();
     }
+
+    // Saving current position of board
+    saveMove(gBoard);
 
     if (modelCell.isShown) return;
 
@@ -180,7 +219,10 @@ function expandShown(board, iIndex, jIndex) {
     // If the cell is marked - it will stay closed
     if (board[iIndex][jIndex].isMarked) return;
 
-    board[iIndex][jIndex].isShown = true;
+    if (!board[iIndex][jIndex].isMine) {
+        board[iIndex][jIndex].isShown = true;
+    }
+
 
     var valueIn = board[iIndex][jIndex].minesAroundCount;
     valueIn = (!valueIn) ? '' : valueIn;
@@ -255,6 +297,21 @@ function updateOpenClasses() {
             if (currentCell.isShown) {
                 addClassToCell({ i, j }, 'open');
                 gGame.shownCount++;
+            }
+        }
+    }
+}
+
+
+/**
+ * Update all cells that opened with mines to be explosive
+ */
+function updateOpenMines() {
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[0].length; j++) {
+            var currentCell = gBoard[i][j];
+            if (currentCell.isShown && currentCell.isMine) {
+                addClassToCell({ i, j }, 'explosive');
             }
         }
     }
@@ -357,10 +414,14 @@ function countMinesAround(board, location) {
  */
 function cellMark(elCell) {
     if (elCell.classList.contains('open')) return;
+    if (gIsPositioningMines) return;
+    if (!gGame.isOn) return;
 
     // Update model
     var locationStr = elCell.classList[1];
     var location = getLocationFromClass(locationStr);
+
+
     gBoard[location.i][location.j].isMarked = !gBoard[location.i][location.j].isMarked;
 
 
@@ -556,7 +617,10 @@ function checkVictory() {
     var hiddenAmount = getHiddenCellsAmount();
     var minesAmount = getMineCellsAmount();
 
-    if (hiddenAmount === minesAmount && minesAmount === gGame.markedCount) {
+    if (hiddenAmount === minesAmount &&
+        minesAmount === gGame.markedCount &&
+        gLivesLeft > 0) {
+
         showVictory();
     }
 }
@@ -572,10 +636,12 @@ function showVictory() {
     gClockInterval = null;
     gGame.isOn = false;
 
+    updateBestScoreClock();
+    gCanClick = false;
 
     var elWinningLabel = document.querySelector('.over-screen');
     elWinningLabel.style.display = 'block';
-    elWinningLabel.querySelector('span').innerText = 'You Win';
+    elWinningLabel.querySelector('span').innerText = 'You Won';
 
     gVictoryShowInterval = setInterval(() => {
         elWinningLabel.querySelector('span').style.textShadow = '0px 0px 20px rgb(182, 171, 14)';
@@ -598,6 +664,8 @@ function gameOver() {
 
     playAudio(LOSER_SOUND);
 
+    gCanClick = false;
+
     var elGameOverLabel = document.querySelector('.over-screen');
     elGameOverLabel.style.display = 'block';
     elGameOverLabel.querySelector('span').innerText = 'You Lost';
@@ -612,26 +680,32 @@ function startClock() {
     gClockInterval = setInterval(() => {
         gNowTime = Date.now();
         var diff = gNowTime - gStartTime;
-
-        var secs = parseInt(diff / 1000);
-        var minutes = parseInt(secs / 60);
-
-        diff -= secs * 1000;
-        secs -= minutes * 60;
-
-        var mills = parseInt(diff / 10);
-
-        minutes = '' + minutes;
-        secs = '' + secs;
-        mills = '' + mills;
-
-
-        var strClock = `${minutes.padStart(2, '0')}:${secs.padStart(2, '0')}:${mills.padStart(2, '0')}`
-
+        var strClock = convertTimeToClock(diff);
 
         var elClock = document.querySelector('.time-in-timer');
         elClock.innerText = strClock;
     }, 120);
+}
+
+
+function convertTimeToClock(timeInMills) {
+    var secs = parseInt(timeInMills / 1000);
+    var minutes = parseInt(secs / 60);
+
+    timeInMills -= secs * 1000;
+    secs -= minutes * 60;
+
+    var mills = parseInt(timeInMills / 10);
+
+    minutes = '' + minutes;
+    secs = '' + secs;
+    mills = '' + mills;
+
+
+    var strClock = `${minutes.padStart(2, '0')}:${secs.padStart(2, '0')}:${mills.padStart(2, '0')}`
+
+
+    return strClock;
 }
 
 
@@ -674,6 +748,90 @@ function updateSafeClick() {
     elSafeClickBtn.innerText = gSafeClicks;
 }
 
+/**
+ * Show the bst score on DOM
+ */
+function showBestScore() {
+    var currentBestScore = localStorage.getItem(`bestScore${gLevel.SIZE}`);
+
+    var elBestScore = document.querySelector('.best-score');
+    var bestScoreInClock = convertTimeToClock(currentBestScore);
+    if (!currentBestScore) {
+        elBestScore.innerText = 'none';
+    } else {
+        elBestScore.innerText = bestScoreInClock;
+    }
+}
+
+/**
+ * Update the best score if needed, and show it on DOM
+ */
+function updateBestScoreClock() {
+    updateLocalStorageScore(gNowTime - gStartTime);
+
+    showBestScore();
+}
+
+
+/**
+ * @param {Number} score 
+ * @returns The updated best score, even if not changed
+ */
+function updateLocalStorageScore(score) {
+    var levelBestScoreStr = `bestScore${gLevel.SIZE}`;
+
+    var currentBestScore = localStorage.getItem(levelBestScoreStr);
+    if (score < currentBestScore || !currentBestScore) localStorage.setItem(levelBestScoreStr, score);
+
+
+    return localStorage.getItem(levelBestScoreStr);
+}
+
+
+/**
+ * 
+ * @param {*} board 
+ * @param {Object} location {i, j}
+ * @returns array of all nearby cells - if isShown
+ */
+function saveSurroundValues(board, location) {
+    var values = [];
+    for (let i = location.i - 1; i <= location.i + 1; i++) {
+        if (i < 0 || i >= board.length) continue;
+
+        for (let j = location.j - 1; j <= location.j + 1; j++) {
+            if (j < 0 || j >= board[i].length) continue;
+            if (i === location.i && j === location.j) continue;
+
+            values.push(board[i][j].isShown);
+        }
+    }
+
+    return values;
+}
+
+/**
+ * Restore all isShown Cells around
+ * @param {*} board 
+ * @param {Object} location {i, j}
+ */
+function restoreSurroundValues(board, location, values) {
+    var index = 0;
+    for (let i = location.i - 1; i <= location.i + 1; i++) {
+        if (i < 0 || i >= board.length) continue;
+
+        for (let j = location.j - 1; j <= location.j + 1; j++) {
+            if (j < 0 || j >= board[i].length) continue;
+            if (i === location.i && j === location.j) continue;
+
+            board[i][j].isShown = values[index];
+            index++;
+
+            if (!board[i][j].isShown) renderCell({ i, j }, '');
+        }
+    }
+}
+
 
 /**
  * Show the all area of the cell hint
@@ -684,22 +842,14 @@ function showSurround(el) {
     var location = getLocationFromClass(locationClass);
     var modelCell = gBoard[location.i][location.j];
 
-
+    var surroundData = saveSurroundValues(gBoard, location);
     expandShown(gBoard, location.i, location.j);
 
     var showSurroundTimeout = setTimeout(() => {
         modelCell.isShown = false;
         renderCell({ i: location.i, j: location.j }, '');
 
-        var cellsAround = getNearCellLocations(gBoard, location.i, location.j);
-
-        for (let i = 0; i < cellsAround.length; i++) {
-            var currentCheck = cellsAround[i];
-            if (!gBoard[currentCheck.i][currentCheck.j].isMine) {
-                gBoard[currentCheck.i][currentCheck.j].isShown = false;
-                renderCell(currentCheck, '');
-            }
-        }
+        restoreSurroundValues(gBoard, location, surroundData);
 
     }, 1.5 * 1000);
 }
@@ -709,13 +859,13 @@ function showSurround(el) {
  * Activated hint mode and update label
  */
 function useHint() {
-    if (gTakingHint) return;
+    if (gIsTakingHint || !gGame.isOn) return;
 
 
     gHintsLeft--;
     updateHints();
 
-    gTakingHint = true;
+    gIsTakingHint = true;
 }
 
 
@@ -733,7 +883,7 @@ function cleanWinningLabel() {
  * @param {Element} el - the safe spot button clicked
  */
 function activeSafeClick(el) {
-    if (gSafeClicks === 0) return;
+    if (gSafeClicks === 0 || !gGame.isOn) return;
     var elSpanBtn = el.querySelector('span');
 
     gSafeClicks--;
@@ -746,6 +896,74 @@ function activeSafeClick(el) {
     var elSpottedCell = document.querySelector(`.cell-${safeSpot.i}-${safeSpot.j}`);
     elSpottedCell.style.backgroundColor = 'rgba(207, 207, 33, 0.76)';
 
+}
+
+
+/**
+ * Undo one move back
+ */
+function undoMove() {
+    if (!gCanClick || !gGame.isOn) return;
+
+    if (gGameSaver.length <= 1) return;
+    var gameCopy = gGameSaver.pop();
+
+    gBoard = gameCopy.board;
+    gLivesLeft = gameCopy.lives;
+    gHintsLeft = gameCopy.hints;
+    gSafeClicks = gameCopy.safeClicks;
+
+
+    renderBoard(gBoard);
+    updateOpenClasses();
+    updateOpenMines();
+
+    updateHints();
+    updateHearts();
+    updateSafeClick();
+}
+
+
+/**
+ * Save current board position in stack
+ * @param {*} board 
+ */
+function saveMove(board) {
+    var boardCopy = copyBoard(board);
+    var gameCopy = {
+        board: boardCopy,
+        lives: gLivesLeft,
+        hints: gHintsLeft,
+        safeClicks: gSafeClicks
+    };
+
+    gGameSaver.push(gameCopy);
+}
+
+
+/**
+ * Enable the option to set the mines
+ */
+function positionedMines() {
+    if (!gCanClick || gGame.isOn) return;
+    gIsPositioningMines = !gIsPositioningMines;
+
+
+    // Changing the button color according to the active status
+    var elPositionBtn = document.querySelector('.positioned-btn');
+    if (gIsPositioningMines) {
+        elPositionBtn.style.backgroundColor = 'red';
+    } else {
+        elPositionBtn.style.backgroundColor = 'rgb(78, 78, 207)';
+    }
+
+
+    gHavePositionedMines = true;
+    gFinishedMinePositioned = !gIsPositioningMines;
+
+    if (gFinishedMinePositioned) {
+        renderBoard(gBoard);
+    }
 }
 
 

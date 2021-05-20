@@ -141,6 +141,32 @@ function getRandomInt(min, max) {
  */
 function playAudio(audio) {
     audio.pause();
-    audio.currentTime = 0;
-    audio.play();
+    setTimeout(() => {
+        audio.currentTime = 0;
+        audio.play();
+    }, 100);
+}
+
+
+/**
+ * @param {*} board 
+ * @returns Deep copy of board
+ */
+function copyBoard(board) {
+    if (!board) return;
+    var res = createMat(board.length, board[0].length);
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[0].length; j++) {
+            var currentObject = board[i][j];
+            var newObject = {};
+
+            for (const key in currentObject) {
+                newObject[key] = currentObject[key];
+            }
+            res[i][j] = newObject;
+        }
+    }
+
+    return res;
 }

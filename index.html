@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mine Sweeper</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+</head>
+
+<body onload="init()" oncontextmenu="return false;">
+    <h1>Mine Sweeper</h1>
+
+    <!-- Clocks and levels area -->
+    <p class="timer">Time: <span class="time-in-timer">0:00:00</span></p>
+    <div class="levels-area">
+        <p><button onclick="changeLevel(4)" class="level-btn">Beginner</button></p>
+        <p><button onclick="changeLevel(8)" class="level-btn">Medium</button></p>
+        <p><button onclick="changeLevel(12)" class="level-btn">Expert</button></p>
+    </div>
+
+    <div class="best-score-label">
+        Best Score: <br> <span class="best-score">none</span>
+    </div>
+
+    <!-- Undo button -->
+    <button onclick="undoMove()" class="undo-btn">Undo</button>
+
+    <!-- Positioned mines button -->
+    <button onclick="positionedMines()" class="positioned-btn">Positioned <br> Mines</button>
+
+
+    <!-- Board game area -->
+    <table class="table-style">
+        <tbody class="game-board">
+        </tbody>
+    </table>
+
+    <!-- label of lives and hints -->
+    <div class="second-label">
+        <p>Lives remain:</p>
+        <p class="lives-stack"></p>
+
+
+        <p>Hints remain: </p>
+        <p class="hints-stack"></p>
+
+        <button onclick="activeSafeClick(this)" class="safe-click">Safe Click <br>
+            <span class="safe-click-remains">3</span> remains
+        </button>
+    </div>
+
+
+    <!-- Game over screen -->
+    <div class="over-screen"><span>You Won</span></div>
+
+
+    <script src="js/utilities.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+<footer>
+    all Rights Reserved © <br> Aviv Ben Shahar ™
+</footer>
+
+</html>

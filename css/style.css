@@ -59,13 +59,83 @@ h1 {
     background-color: rgb(131, 127, 127);
 }
 
+.best-score-label {
+    position: absolute;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(87, 116, 170, 0.781);
+    width: 130px;
+    height: 150px;
+    padding-left: 20px;
+    padding-right: 20px;
+    top: 280px;
+    font-family: 'Orbitron', sans-serif !important;
+    line-height: 70px;
+    font-weight: bold;
+    font-size: large;
+}
+
+.undo-btn {
+    position: absolute;
+    left: 45px;
+    bottom: 20%;
+    transform: translate(0%, 55%);
+    width: 100px;
+    height: 50px;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(78, 78, 207);
+    font-family: 'Monaco';
+    font-size: large;
+    font-weight: bold;
+    line-height: 0px;
+}
+
+.undo-btn:hover {
+    background-color: rgb(179, 174, 174);
+    cursor: pointer;
+    border: 2px dashed blue;
+}
+
+.undo-btn:active {
+    background-color: rgb(100, 99, 99);
+}
+
+.positioned-btn {
+    position: absolute;
+    left: 45px;
+    bottom: 10%;
+    transform: translate(0%, 65%);
+    width: 100px;
+    height: 50px;
+    padding: 0px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(78, 78, 207);
+    font-family: 'Monaco';
+    font-size: small;
+    font-weight: bold;
+    line-height: 20px;
+}
+
+.positioned-btn:hover {
+    background-color: rgb(179, 174, 174);
+    cursor: pointer;
+    border: 2px dashed blue;
+}
+
+.positioned-btn:active {
+    background-color: rgb(100, 99, 99);
+}
+
 .table-style {
     border: 2px dashed rgb(7, 37, 92);
-    width: 450px;
-    height: 450px;
+    width: 400px;
+    height: 400px;
     position: absolute;
     left: 50%;
-    bottom: 5%;
+    bottom: 10%;
     transform: translate(-50%, -5%);
 }
 
